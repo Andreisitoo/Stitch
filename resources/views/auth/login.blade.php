@@ -24,13 +24,17 @@
                 <h1 class="text-2xl font-bold tracking-tight text-slate-900">Sistema Administrativo TCG</h1>
                 <p class="mt-2 text-sm leading-5 text-slate-500">Control central de inventario, grading y regulación de activos Pokémon TCG.</p>
 
+                @if (session('status'))
+                    <p role="status" class="mt-4 rounded border border-emerald-200 bg-emerald-50 px-3 py-2 text-xs font-medium text-emerald-800">{{ session('status') }}</p>
+                @endif
+
                 <form action="{{ route('login') }}" method="POST" class="mt-7 space-y-5">
                     @csrf
 
                     <x-input
                         id="email"
                         name="email"
-                        label="Usuario o Correo Institucional"
+                        label="Correo Institucional"
                         type="email"
                         :value="old('email')"
                         placeholder="nombre@entrenadores.com"

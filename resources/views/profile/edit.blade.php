@@ -68,11 +68,18 @@
                         <span class="text-slate-300">/</span>
                         <a href="{{ route('register') }}" class="hover:text-[#a61b28]">Registro</a>
                     </div>
+                    <form action="{{ route('logout') }}" method="POST">
+                        @csrf
+                        <button type="submit" class="inline-flex min-h-8 items-center gap-1.5 rounded border border-slate-200 px-2.5 text-[10px] font-semibold text-slate-600 hover:border-red-200 hover:text-[#a61b28]">
+                            <svg viewBox="0 0 20 20" fill="none" aria-hidden="true" class="size-3.5"><path d="M8 3H4v14h4m3-3 4-4-4-4m4 4H7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                            Cerrar sesión
+                        </button>
+                    </form>
                     <span class="hidden h-7 w-px bg-slate-200 sm:block"></span>
                     <span class="flex size-8 items-center justify-center rounded-full bg-[#e9eef8] text-[10px] font-bold text-[#304967]">{{ collect(explode(' ', $user->name))->map(fn ($part) => mb_substr($part, 0, 1))->take(2)->join('') }}</span>
                     <span class="hidden sm:block">
                         <span class="block text-[11px] font-semibold text-slate-800">{{ $user->name }}</span>
-                        <span class="block text-[9px] text-slate-500">Administrador · Terminal activa</span>
+                        <span class="block text-[9px] text-slate-500">{{ $user->role === 'admin' ? 'Administrador' : 'Empleado' }} · Terminal activa</span>
                     </span>
                 </div>
             </header>
@@ -85,9 +92,13 @@
                     </div>
                     <span class="inline-flex items-center gap-1.5 rounded border border-emerald-200 bg-emerald-50 px-2.5 py-1.5 text-[9px] font-bold uppercase tracking-wider text-emerald-700">
                         <span class="size-1.5 rounded-full bg-emerald-500"></span>
-                        Acceso Master Admin
+                        {{ $user->role === 'admin' ? 'Acceso Master Admin' : 'Usuario operativo' }}
                     </span>
                 </div>
+
+                @if (session('status'))
+                    <p role="status" class="mb-4 rounded border border-emerald-200 bg-emerald-50 px-3 py-2 text-xs font-medium text-emerald-800">{{ session('status') }}</p>
+                @endif
 
                 <div class="grid items-start gap-4 xl:grid-cols-5 xl:gap-5">
                     <section id="profile-details" class="overflow-hidden rounded-md border border-slate-200 bg-white xl:col-span-3">
@@ -101,7 +112,7 @@
                             </div>
                         </div>
 
-                        <form action="{{ route('profile.edit') }}" method="POST" class="space-y-4 p-4 sm:p-5">
+                        <form action="{{ route('profile.update') }}" method="POST" class="space-y-4 p-4 sm:p-5">
                             @csrf
                             @method('PUT')
 
@@ -112,9 +123,9 @@
                                 </div>
                                 <div class="mt-1.5 flex flex-wrap items-center gap-2">
                                     <span class="size-1.5 rounded-full bg-[#c91f2d]"></span>
-                                    <p class="text-xs font-semibold text-slate-700">{{ $user->role }}</p>
+                                    <p class="text-xs font-semibold text-slate-700">{{ $user->role === 'admin' ? 'Administrador General' : 'Empleado' }}</p>
                                 </div>
-                                <p class="mt-1 text-[10px] leading-4 text-slate-500">Permisos asignados por el Director de Operaciones TCG México.</p>
+                                    <p class="mt-1 text-[10px] leading-4 text-slate-500">Los permisos de administrador son asignados por un responsable.</p>
                             </div>
 
                             <div class="grid gap-4 sm:grid-cols-2">
@@ -135,7 +146,7 @@
                                         autocomplete="username"
                                         required
                                     />
-                                    <p class="mt-1 text-[10px] text-slate-400">ID de empleado: {{ $user->employee_id }}</p>
+                                    <p class="mt-1 text-[10px] text-slate-400">ID de usuario: {{ $user->id }}</p>
                                 </div>
                             </div>
 
@@ -155,7 +166,7 @@
                                 </p>
                             </div>
 
-                            <div class="grid gap-4 sm:grid-cols-2">
+                            <div class="grid gap-4">
                                 <div>
                                     <x-input
                                         id="phone"
@@ -169,14 +180,6 @@
                                     />
                                     <p class="mt-1 text-[10px] leading-4 text-slate-400">Solo caracteres numéricos para SMS de doble factor.</p>
                                 </div>
-                                <x-select
-                                    id="branch"
-                                    name="branch"
-                                    label="Sucursal asignada"
-                                    :value="old('branch', $user->branch_id)"
-                                    :options="[$user->branch_id => $user->branch]"
-                                    required
-                                />
                             </div>
 
                             <div class="flex flex-wrap items-center justify-end gap-2 border-t border-slate-100 pt-4">
@@ -200,7 +203,7 @@
                             </div>
                         </div>
 
-                        <form action="{{ route('profile.edit') }}" method="POST" class="space-y-4 p-4 sm:p-5">
+                        <form action="{{ route('profile.password') }}" method="POST" class="space-y-4 p-4 sm:p-5">
                             @csrf
                             @method('PUT')
 
@@ -256,7 +259,7 @@
                                     </span>
                                     <span>
                                         <span class="block text-[10px] font-semibold text-slate-700">Autenticación de 2 factores (2FA)</span>
-                                        <span class="mt-0.5 block text-[9px] text-slate-500">{{ $user->two_factor_method }}</span>
+                                        <span class="mt-0.5 block text-[9px] text-slate-500">Autenticación de dos factores no configurada</span>
                                     </span>
                                 </div>
                                 <span class="rounded bg-emerald-100 px-2 py-1 text-[8px] font-bold uppercase tracking-wider text-emerald-700">Protegido</span>

@@ -29,15 +29,10 @@
                             <legend class="text-xs font-semibold text-slate-700">Rol de sistema</legend>
                             <span class="text-[10px] font-semibold uppercase tracking-[0.12em] text-slate-400">Asignación por sistema</span>
                         </div>
-                        <div class="grid grid-cols-2 gap-2 rounded-md bg-slate-100 p-1">
-                            <label class="flex min-h-9 cursor-pointer items-center justify-center gap-2 rounded border px-3 text-xs font-semibold transition {{ old('role', 'admin') === 'admin' ? 'border-slate-200 bg-white text-slate-800 shadow-sm' : 'border-transparent text-slate-500 hover:text-slate-700' }}">
-                                <input type="radio" name="role" value="admin" class="size-3.5 border-slate-300 text-[#c91f2d] focus:ring-[#c91f2d]" @checked(old('role', 'admin') === 'admin')>
-                                Administrador
-                            </label>
-                            <label class="flex min-h-9 cursor-pointer items-center justify-center gap-2 rounded border px-3 text-xs font-semibold transition {{ old('role') === 'employee' ? 'border-slate-200 bg-white text-slate-800 shadow-sm' : 'border-transparent text-slate-500 hover:text-slate-700' }}">
-                                <input type="radio" name="role" value="employee" class="size-3.5 border-slate-300 text-[#c91f2d] focus:ring-[#c91f2d]" @checked(old('role') === 'employee')>
-                                Empleado
-                            </label>
+                        <div class="flex items-center justify-between rounded-md border border-slate-200 bg-slate-50 px-3 py-2.5">
+                            <input type="hidden" name="role" value="employee">
+                            <span class="text-xs font-semibold text-slate-700">Empleado</span>
+                            <span class="text-[10px] font-medium text-slate-500">Los permisos de administrador los asigna un responsable.</span>
                         </div>
                         @error('role')
                             <p class="mt-1.5 text-xs font-medium text-red-700">{{ $message }}</p>
@@ -84,7 +79,7 @@
                         label="Teléfono directo (10 dígitos)"
                         type="tel"
                         :value="old('phone')"
-                        placeholder="55 1234 5678"
+                        placeholder="5512345678"
                         autocomplete="tel"
                         inputmode="numeric"
                         minlength="10"
@@ -129,6 +124,10 @@
                         </svg>
                     </x-button>
                 </form>
+
+                @if (session('status'))
+                    <p role="status" class="mt-4 rounded border border-emerald-200 bg-emerald-50 px-3 py-2 text-xs font-medium text-emerald-800">{{ session('status') }}</p>
+                @endif
 
                 <p class="mt-4 text-center text-xs text-slate-500">
                     ¿Ya tienes cuenta?

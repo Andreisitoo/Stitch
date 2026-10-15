@@ -1,31 +1,26 @@
 <?php
 
+use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\Auth\RegisterController;
+use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/login', function () {
-    return view('auth.login');
-})->name('login');
+Route::middleware('guest')->group(function () {
+    Route::get('/login', [LoginController::class, 'create'])->name('login');
+    Route::post('/login', [LoginController::class, 'store']);
 
-Route::get('/register', function () {
-    return view('auth.register');
-})->name('register');
+    Route::get('/register', [RegisterController::class, 'create'])->name('register');
+    Route::post('/register', [RegisterController::class, 'store']);
+});
 
-Route::get('/perfil', function () {
-    $user = (object) [
-        'name' => 'Carlos Mendoza',
-        'username' => 'cmendoza',
-        'employee_id' => 'EMP-04',
-        'role' => 'Administrador General (Acceso Total a Inventario y Proveedores)',
-        'email' => 'carlos.mendoza@entrenadores.mx',
-        'phone' => '+52 (55) 5489 2291',
-        'branch_id' => 'centro-04',
-        'branch' => 'Sucursal Centro (ID #04)',
-        'two_factor_method' => 'Activo vía Token TCG Hardware',
-    ];
+Route::middleware('auth')->group(function () {
+    Route::get('/perfil', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::put('/perfil', [ProfileController::class, 'update'])->name('profile.update');
+    Route::put('/perfil/password', [ProfileController::class, 'updatePassword'])->name('profile.password');
 
-    return view('profile.edit', compact('user'));
-})->name('profile.edit');
+    Route::post('/logout', [LoginController::class, 'destroy'])->name('logout');
+});
