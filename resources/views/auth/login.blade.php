@@ -81,6 +81,10 @@
             </div>
 
             <footer class="border-t border-slate-100 bg-slate-50/70 px-6 py-4 sm:px-8">
+                <p class="mb-3 text-center text-xs text-slate-500">
+                    ¿No tienes cuenta?
+                    <a href="{{ route('register') }}" class="font-semibold text-[#a61b28] underline decoration-[#e7b8bd] underline-offset-4 hover:text-[#7f1420]">Crear cuenta</a>
+                </p>
                 <div class="flex items-center justify-between text-[10px] font-semibold uppercase tracking-wider text-slate-500">
                     <span>Terminal v2.4.0</span>
                     <span>TCG · ERP · PROD</span>
